@@ -5,7 +5,7 @@
 
 ## Installation
 ```
-$ npm install i18n-vuex
+$ yarn add i18n-vuex
 ```
 
 ## Setup
