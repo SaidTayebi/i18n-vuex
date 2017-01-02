@@ -1,6 +1,6 @@
 {
-  "name": "vuex-i18n",
-  "version": "1.3.1",
+  "name": "i18n-vuex",
+  "version": "1.0.0",
   "description": "Easy localization for vue-components using vuex as data store",
   "directories": {
     "test": "test"
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dkfbasel/vuex-i18n.git"
+    "url": "git+https://github.com/SaidTayebi/i18n-vuex.git"
   },
   "keywords": [
     "localization",
@@ -25,27 +25,15 @@
     "i18n"
   ],
   "author": {
-    "name": "Ramon Saccilotto",
-    "email": "tikiatua@gmail.com",
-    "url": "https://github.com/tikiatua"
+    "name": "Said Tayebi",
+    "email": "said.tayebi@gmail.com",
+    "url": "https://github.com/SaidTayebi"
   },
-  "contributors": [
-    {
-      "name": "Vu Duong",
-      "email": "info@spotlit.de",
-      "url": "https://github.com/vuduo"
-    },
-    {
-      "name": "ktquez",
-      "email": "ktquez@gmail.com",
-      "url": "https://github.com/ktquez"
-    }
-  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dkfbasel/vuex-i18n/issues"
+    "url": "https://github.com/SaidTayebi/i18n-vuex/issues"
   },
-  "homepage": "https://github.com/dkfbasel/vuex-i18n#readme",
+  "homepage": "https://github.com/SaidTayebi/i18n-vuex#readme",
   "devDependencies": {
     "babel-plugin-external-helpers": "^6.18.0",
     "babel-preset-es2015": "^6.18.0",
