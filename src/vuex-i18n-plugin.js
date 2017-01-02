@@ -4,10 +4,10 @@
 */
 
 // initialize the plugin object
-let VuexI18nPlugin = {};
+const VuexI18nPlugin = {};
 
 // internationalization plugin for vue js using vuex
-VuexI18nPlugin.install = function install(Vue, store, moduleName = 'i18n') {
+VuexI18nPlugin.install = function install(Vue, store, moduleName = 'i18n', transFunct = '$t') {
 
 	// check if the plugin was correctly initialized
 	if (store.state.hasOwnProperty(moduleName) === false) {
@@ -105,7 +105,7 @@ VuexI18nPlugin.install = function install(Vue, store, moduleName = 'i18n') {
 	};
 
 	// register the translation function on the vue instance
-	Vue.prototype.$t = translate;
+	Vue.prototype[transFunct] = translate;
 
 	// register a filter function for translations
 	Vue.filter('translate', translate);
