@@ -7,7 +7,7 @@
   },
   "main": "dist/vuex-i18n.min.js",
   "files": [
-    "dist",
+    "src",
     "test"
   ],
   "scripts": {
