@@ -4,7 +4,7 @@
 */
 
 // define a simple vuex module to handle locale translations
-const i18nVuexModule =  {
+export default {
 	state: {
 		locale: null,
 		translations: {}
@@ -19,7 +19,7 @@ const i18nVuexModule =  {
 		// add a new locale
 		ADD_LOCALE(state, payload) {
 			// reduce the given translations to a single-depth tree
-			var translations = flattenTranslations(payload.translations);
+			const translations = flattenTranslations(payload.translations);
 			state.translations[payload.locale] = translations;
 		},
 
@@ -32,17 +32,17 @@ const i18nVuexModule =  {
 				// check if the current locale is the given locale to remvoe
 				if (state.locale === payload.locale) {
 					// reset the current locale
-					state.locale = null;
+					state.locale = null
 				}
 
 				// create a copy of the translations object
-				let translationCopy = Object.assign({}, state.translations);
+				let translationCopy = Object.assign({}, state.translations)
 
 				// remove the given locale
-				delete translationCopy[payload.locale];
+				delete translationCopy[payload.locale]
 
 				// set the state to the new object
-				state.translations = copy;
+				state.translations = copy
 
 			}
 		}
@@ -55,7 +55,7 @@ const i18nVuexModule =  {
 			context.commit({
 				type: 'SET_LOCALE',
 				locale: payload.locale
-			});
+			})
 		},
 
 		// add a new locale with translations
@@ -64,7 +64,7 @@ const i18nVuexModule =  {
 				type: 'ADD_LOCALE',
 				locale: payload.locale,
 				translations: payload.translations
-			});
+			})
 		},
 
 		// remove the given locale translations
@@ -73,39 +73,39 @@ const i18nVuexModule =  {
 				type: 'REMOVE_LOCALE',
 				locale: payload.locale,
 				translations: payload.translations
-			});
+			})
 		}
 
 	}
-};
+}
 
 // flattenTranslations will convert object trees for translations into a
 // single-depth object tree
 const flattenTranslations = function flattenTranslations(translations) {
 
-	let toReturn = {};
+	const toReturn = {}
 
-	for (let i in translations) {
+	for (const i in translations) {
 
 		// check if the property is present
 		if (!translations.hasOwnProperty(i)) {
-			continue;
+			continue
 		}
 
 		// get the type of the property
-		let objType = typeof translations[i];
+		let objType = typeof translations[i]
 
 		// allow unflattened array of strings
 		if (isArray(translations[i])) {
 
-			let count = translations[i].length;
+			let count = translations[i].length
 
 			for (let index = 0; index < count; index++) {
 				let itemType = typeof translations[i][index];
 
 				if (itemType !== 'string') {
-					console.warn('vuex-i18n:','currently only arrays of strings are fully supported', translations[i]);
-					break;
+					console.warn('vuex-i18n:','currently only arrays of strings are fully supported', translations[i])
+					break
 				}
 			}
 
@@ -113,25 +113,24 @@ const flattenTranslations = function flattenTranslations(translations) {
 
 		} else if (objType == 'object' && objType !== null) {
 
-			let flatObject = flattenTranslations(translations[i]);
+			let flatObject = flattenTranslations(translations[i])
 
 			for (let x in flatObject) {
-				if (!flatObject.hasOwnProperty(x)) continue;
+				if (!flatObject.hasOwnProperty(x)) continue
 
-				toReturn[i + '.' + x] = flatObject[x];
+				toReturn[i + '.' + x] = flatObject[x]
 			}
 
 		} else {
-			toReturn[i] = translations[i];
+			toReturn[i] = translations[i]
 
 		}
 	}
-	return toReturn;
-};
+	return toReturn
+}
 
 // check if the given object is an array
 function isArray(obj) {
-	return !!obj && Array === obj.constructor;
+	return !!obj && Array === obj.constructor
 }
 
-export default i18nVuexModule;
