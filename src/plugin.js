@@ -4,172 +4,158 @@
 */
 
 // initialize the plugin object
-const VuexI18nPlugin = {};
+export default {
+  // internationalization plugin for vue js using vuex
+  install(Vue, store, moduleName = 'i18n', transFunct = '$t') {
 
-// internationalization plugin for vue js using vuex
-VuexI18nPlugin.install = function install(Vue, store, moduleName = 'i18n', transFunct = '$t') {
+    // check if the plugin was correctly initialized
+    if (!store.state.hasOwnProperty(moduleName)) {
+      console.error('i18n vuex module is not correctly initialized. Please check the module name:', moduleName);
 
-	// check if the plugin was correctly initialized
-	if (store.state.hasOwnProperty(moduleName) === false) {
-		console.error('i18n vuex module is not correctly initialized. Please check the module name:', moduleName);
+      // always return the key if module is not initialized correctly
+      Vue.prototype.$i18n = key => key
 
-		// always return the key if module is not initialized correctly
-		Vue.prototype.$i18n = function(key) {
-			return key;
-		};
+      Vue.prototype.$getLanguage = () => null
 
-		Vue.prototype.$getLanguage = function() {
-			return null;
-		};
+      Vue.prototype.$setLanguage = () => {
+        console.error('i18n vuex module is not correctly initialized');
+      }
 
-		Vue.prototype.$setLanguage = function() {
-			console.error('i18n vuex module is not correctly initialized');
-		};
+      return
+    }
 
-		return;
-	};
+    // get localized string from store
+    const translate = (key, options) => {
 
-	// get localized string from store
-	let translate = function $t(key, options) {
+      // get the current language from the store
+      const locale = store.state[moduleName].locale
 
-		// get the current language from the store
-		let locale = store.state[moduleName].locale;
+      // check if the language exists in the store. return the key if not
+      if (!store.state[moduleName].translations.hasOwnProperty(locale)) {
+        return render(key, options);
+      }
 
-		// check if the language exists in the store. return the key if not
-		if (store.state[moduleName].translations.hasOwnProperty(locale) === false ) {
-			return render(key, options);
-		}
+      // check if the key exists in the store. return the key if not
+      if (!store.state[moduleName].translations[locale].hasOwnProperty(key)) {
+        console.warn('Key not found:', key)
 
-		// check if the key exists in the store. return the key if not
-		if (store.state[moduleName].translations[locale].hasOwnProperty(key) === false) {
-			return render(key, options);
-		}
+        return render(`** ${key} **`, options);
+      }
 
-		// return the value from the store
-		return render(store.state[moduleName].translations[locale][key], options);
-	};
+      // return the value from the store
+      return render(store.state[moduleName].translations[locale][key], options)
+    };
 
 
-	let setLocale = function setLocale(locale) {
-		store.dispatch({
-			type: 'setLocale',
-			locale: locale
-		});
-	};
+    const setLocale = locale => {
+      store.dispatch({
+        type: 'setLocale',
+        locale
+      })
+    }
 
-	let getLocale = function getLocale() {
-		return store.state[moduleName].locale;
-	};
+    const getLocale = () => store.state[moduleName].locale
 
-	// add predefined translations to the store
-	let addLocale = function addLocale(locale, translations) {
-		return store.dispatch({
-			type: 'addLocale',
-			locale: locale,
-			translations: translations
-		});
-	};
+    // add predefined translations to the store
+    const addLocale = (locale, translations) => {
+      return store.dispatch({
+        type: 'addLocale',
+        locale,
+        translations
+      })
+    }
 
-	// remove the givne locale from the store
-	let removeLocale = function removeLocale(locale) {
-		if (store.state[moduleName].translations.hasOwnProperty(locale)) {
-			store.dispatch({
-				type: 'removeLocale',
-				locale: locale
-			});
-		}
-	};
+    // remove the givne locale from the store
+    const removeLocale = locale => {
+      if (store.state[moduleName].translations.hasOwnProperty(locale)) {
+        store.dispatch({
+          type: 'removeLocale',
+          locale
+        })
+      }
+    }
 
-	// check if the given locale is already loaded
-	let checkLocaleExists = function checkLocaleExists(locale) {
-		return store.state[moduleName].translations.hasOwnProperty(locale);
-	};
+    // check if the given locale is already loaded
+    const checkLocaleExists = locale => {
+      return store.state[moduleName].translations.hasOwnProperty(locale)
+    }
 
-	// register vue prototype methods
-	Vue.prototype.$i18n = {
-		locale: getLocale,
-		set: setLocale,
-		add: addLocale,
-		remove: removeLocale,
-		exists: checkLocaleExists
-	};
+    // register vue prototype methods
+    Vue.prototype.$i18n = {
+      locale: getLocale,
+      set: setLocale,
+      add: addLocale,
+      remove: removeLocale,
+      exists: checkLocaleExists
+    };
 
-	// register global methods
-	Vue.i18n = {
-		locale: getLocale,
-		set: setLocale,
-		add: addLocale,
-		remove: removeLocale,
-		exists: checkLocaleExists,
-		translate: translate
-	};
+    // register global methods
+    Vue.i18n = {
+      locale: getLocale,
+      set: setLocale,
+      add: addLocale,
+      remove: removeLocale,
+      exists: checkLocaleExists,
+      translate: translate
+    };
 
-	// register the translation function on the vue instance
-	Vue.prototype[transFunct] = translate;
+    // register the translation function on the vue instance
+    Vue.prototype[transFunct] = translate
 
-	// register a filter function for translations
-	Vue.filter('translate', translate);
+    // register a filter function for translations
+    Vue.filter('translate', translate)
 
-};
+  }
+}
 
-// replace will replace the given replacements in the translation string
-let replace = function replace(translation, replacements, warn=true) {
+
+// will replace the given replacements in the translation string
+const replace = (translation, replacements, warn = true) => {
 
 	// check if the object has a replace property
 	if (!translation.replace) {
-		return translation;
+		return translation
 	}
 
-	return translation.replace(/\{\w+\}/g, function(placeholder) {
+	return translation.replace(/\{\w+\}/g, placeholder => {
 
-		let key = placeholder.replace('{', '').replace('}', '');
+		const key = placeholder.replace('{', '').replace('}', '')
 
 		if (replacements[key] !== undefined) {
-			return replacements[key];
+			return replacements[key]
 		}
 
 		// warn user that the placeholder has not been found
 		if (warn === true) {
-			console.group('Not all placeholder founds');
-			console.warn('Text:', translation);
-			console.warn('Placeholder:', placeholder);
-			console.groupEnd();
+			console.group('Not all placeholder founds')
+			console.warn('Text:', translation)
+			console.warn('Placeholder:', placeholder)
+			console.groupEnd()
 		}
 
 		// return the original placeholder
-		return placeholder;
-	});
-};
+		return placeholder
+	})
+}
 
 // render will return the given translation object
-let render = function render(translation, replacements = {}) {
+const render = (translation, replacements = {}) => {
 
 	// get the type of the property
-	let objType = typeof translation;
+	const objType = typeof translation
 
 	if (isArray(translation)) {
 
 		// replace the placeholder elements in all sub-items
-		return translation.map((item) => {
-			return replace(item, replacements, false);
-		});
-
+		return translation.map(item => replace(item, replacements, false))
 
 	} else if (objType === 'string') {
-		return replace(translation, replacements);
-
+		return replace(translation, replacements)
 	}
 
 	// return translation item directly
-	return translation;
-
-};
-
-// check if the given object is an array
-function isArray(obj) {
-	return !!obj && Array === obj.constructor;
+	return translation
 }
 
-
-
-export default VuexI18nPlugin;
+// check if the given object is an array
+const isArray = obj => !!obj && Array === obj.constructor
