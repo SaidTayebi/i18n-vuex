@@ -39,7 +39,7 @@ export default {
       if (!store.state[moduleName].translations[locale].hasOwnProperty(key)) {
         console.warn('Key not found:', key)
 
-        return render(key, options);
+        return render(`** ${key} **`, options);
       }
 
       // return the value from the store
