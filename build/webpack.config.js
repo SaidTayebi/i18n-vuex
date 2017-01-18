@@ -1,10 +1,10 @@
-var path = require('path');
-var webpack = require('webpack');
+import path from 'path'
+import webpack from 'webpack'
 
-module.exports = {
+export default {
   entry: ['./src/index.js'],
   output: {
-    path: path.resolve(__dirname, './dist'),
+    path: path.resolve(__dirname, '../dist'),
     filename: 'index.js',
     library: ['i18n-vuex'],
     libraryTarget: 'umd'
